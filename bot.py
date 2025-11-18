@@ -34,10 +34,16 @@ async def translate_text(text, target_lang):
         "format": "text"
     }
 
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, data=payload) as response:
-            data = await response.json()
-            return data.get("translatedText", None)
+    try:
+        timeout = aiohttp.ClientTimeout(total=10)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            async with session.post(url, data=payload) as response:
+                if response.status != 200:
+                    return None
+                data = await response.json()
+                return data.get("translatedText", None)
+    except:
+        return None
 
 
 @bot.event
@@ -72,6 +78,11 @@ async def on_raw_reaction_add(payload):
         return
 
     original_text = message.content
+
+    # Validate message length
+    if len(original_text) > 5000:
+        await channel.send("⚠️ Message too long to translate.")
+        return
 
     # Translate
     translated = await translate_text(original_text, target_lang)
