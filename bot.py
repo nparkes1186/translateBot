@@ -1,10 +1,10 @@
 import discord
+import os
 from discord.ext import commands
 import aiohttp
 
 # ---------- CONFIG ----------
-TOKEN = "MTQ0MDI5NDQwOTU1NDg5MDc2MA.GyABa6.oH0SbnDecw5VBYOEhNCR9-DKjM55Yv8jQ5zmrg"
-
+TOKEN = os.getenv("DISCORD_TOKEN")
 # Map flag emojis → LibreTranslate language codes
 LANG_MAP = {
     "🇬🇧": "en",  # UK English
